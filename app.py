@@ -247,9 +247,21 @@ def admin():
     cursor.execute('SELECT party, vote_count FROM party_stats ORDER BY vote_count DESC')
     stats = cursor.fetchall()
     
+    # Count voted users
+    cursor.execute('SELECT COUNT(*) FROM users WHERE has_voted = TRUE')
+    voted_users_count = cursor.fetchone()[0]
+    
+    # Count total users
+    cursor.execute('SELECT COUNT(*) FROM users')
+    total_users_count = cursor.fetchone()[0]
+    
     conn.close()
     
-    return render_template('admin.html', users=users, stats=stats)
+    return render_template('admin.html', 
+                         users=users, 
+                         stats=stats,
+                         voted_users_count=voted_users_count,
+                         total_users_count=total_users_count)
 
 if __name__ == '__main__':
     init_db()

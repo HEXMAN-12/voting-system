@@ -262,9 +262,7 @@
       <button onclick="window.location.href='/vote'">🗳️ Vote Page</button>
       <button onclick="window.location.href='/results'">📊 View Results</button>
       <button class="secondary-btn" onclick="window.location.reload()">🔄 Refresh Data</button>
-    </div>
-
-    <h2>📊 Voting Statistics</h2>
+    </div>    <h2>📊 Voting Statistics</h2>
     <div class="stats-grid">
       {% set pmln_votes = 0 %}
       {% set pti_votes = 0 %}
@@ -281,8 +279,8 @@
       {% endfor %}
       
       {% set total_votes = pmln_votes + pti_votes + army_votes %}
-      {% set voted_users = users|selectattr(4)|list|length %}
-      {% set total_users = users|length %}
+      {% set voted_users = voted_users_count %}
+      {% set total_users = total_users_count %}
       
       <div class="stat-card">
         <div class="stat-number">🐯 {{ pmln_votes }}</div>
