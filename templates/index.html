@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PMS Voting Portal</title>
+    <style>      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        color: #e4e4e7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+          radial-gradient(circle at 20% 20%, rgba(185, 147, 214, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(140, 166, 219, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 40% 70%, rgba(185, 147, 214, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+      }h1 {
+        font-size: 2.7rem;
+        color: #f8fafc;
+        letter-spacing: 2px;
+        text-shadow: 0 0 20px rgba(185, 147, 214, 0.5), 0 0 40px rgba(185, 147, 214, 0.3);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: 1.3rem;
+        color: #b993d6;
+        margin-bottom: 24px;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }      .form-container {
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+        padding: 36px 38px 32px 38px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(185, 147, 214, 0.1) inset,
+                    0 0 20px rgba(185, 147, 214, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 340px;
+        max-width: 400px;
+        margin: 20px;
+      }      input {
+        margin: 12px 0;
+        padding: 14px 22px;
+        border-radius: 12px;
+        border: 1px solid rgba(185, 147, 214, 0.3);
+        font-size: 1.08rem;
+        width: 230px;
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+        color: #e4e4e7;
+      }
+      input:focus {
+        border: 1px solid #b993d6;
+        outline: none;
+        background: rgba(15, 15, 35, 0.9);
+        box-shadow: 0 0 0 3px rgba(185, 147, 214, 0.1);
+        transform: translateY(-1px);
+      }
+      input::placeholder {
+        color: rgba(228, 228, 231, 0.6);
+      }      button {
+        padding: 14px 32px;
+        margin-top: 16px;
+        background: linear-gradient(135deg, #b993d6 0%, #8ca6db 100%);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.08rem;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 20px rgba(185, 147, 214, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      button:hover {
+        background: linear-gradient(135deg, #8ca6db 0%, #b993d6 100%);
+        box-shadow: 0 6px 25px rgba(185, 147, 214, 0.6);
+        transform: translateY(-2px);
+      }
+      button:active {
+        transform: translateY(0px);
+        box-shadow: 0 2px 15px rgba(185, 147, 214, 0.4);
+      }.secondary-btn {
+        background: rgba(15, 15, 35, 0.8) !important;
+        color: #b993d6 !important;
+        border: 1px solid rgba(185, 147, 214, 0.5) !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(5px) !important;
+      }
+      .secondary-btn:hover {
+        background: rgba(185, 147, 214, 0.1) !important;
+        border: 1px solid #b993d6 !important;
+        transform: translateY(-1px) !important;
+      }      .danger-btn {
+        background: rgba(15, 15, 35, 0.8) !important;
+        color: #ef4444 !important;
+        border: 1px solid rgba(239, 68, 68, 0.5) !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(5px) !important;
+      }
+      .danger-btn:hover {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border: 1px solid #ef4444 !important;
+        transform: translateY(-1px) !important;
+      }
+
+      .error-message {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        font-size: 0.95rem;
+      }
+
+      .success-message {
+        color: #51cf66;
+        background: rgba(81, 207, 102, 0.1);
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 1px solid rgba(81, 207, 102, 0.3);
+        font-size: 0.95rem;
+      }
+
+      .info-text {
+        margin-top: 18px;
+        font-size: 0.98rem;
+        color: #b993d6b0;
+        text-align: center;
+      }      .navigation-links {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .navigation-links a {
+        color: #b993d6;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: rgba(185, 147, 214, 0.05);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+      }
+
+      .navigation-links a:hover {
+        color: #8ca6db;
+        background: rgba(185, 147, 214, 0.15);
+        border-color: rgba(185, 147, 214, 0.4);
+        transform: translateY(-1px);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .form-container {
+          min-width: 280px;
+          padding: 24px 20px;
+        }
+        input {
+          width: 200px;
+        }
+        h1 {
+          font-size: 2.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PMS Voting Portal</h1>
+    <h2>🗳️ Welcome to the official voting portal</h2>
+
+    <div class="form-container" id="loginForm">
+      <div id="loginMessage"></div>
+      <input
+        type="text"
+        id="loginCnic"
+        placeholder="CNIC (12345-1234567-1)"
+        required
+      />
+      <input
+        type="password"
+        id="loginPassword"
+        placeholder="Password"
+        required
+      />
+      <button onclick="login()">Login</button>
+      <div class="info-text">
+        Don't have an account?<br />
+        <button
+          class="secondary-btn"
+          style="margin-top: 8px"
+          onclick="showSignup()"
+        >
+          Register yourself now
+        </button>
+      </div>
+    </div>
+
+    <div class="form-container" id="signupForm" style="display: none">
+      <div id="signupMessage"></div>
+      <input type="text" id="firstName" placeholder="First Name" required />
+      <input type="text" id="lastName" placeholder="Last Name" required />
+      <input
+        type="text"
+        id="cnic"
+        placeholder="CNIC (12345-1234567-1)"
+        required
+      />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="text" id="phone" placeholder="Phone" required />
+      <input type="text" id="address" placeholder="Address" required />
+      <input
+        type="password"
+        id="password"
+        placeholder="Password (min 6 chars)"
+        required
+      />
+      <button onclick="signup()">Register</button>
+      <button
+        class="danger-btn"
+        style="margin-top: 8px"
+        onclick="goBackFromSignup()"
+      >
+        Back to Login
+      </button>
+    </div>
+
+    <div class="navigation-links">
+      <a href="/results">View Results</a>
+      <a href="/admin">Admin Panel</a>
+    </div>
+
+    <script>
+      function showMessage(elementId, message, isError = false) {
+        const messageDiv = document.getElementById(elementId);
+        messageDiv.innerHTML = `<div class="${
+          isError ? "error-message" : "success-message"
+        }">${message}</div>`;
+        setTimeout(() => {
+          messageDiv.innerHTML = "";
+        }, 5000);
+      }
+
+      async function login() {
+        const cnic = document.getElementById("loginCnic").value;
+        const password = document.getElementById("loginPassword").value;
+
+        if (!cnic || !password) {
+          showMessage("loginMessage", "Please fill in all fields", true);
+          return;
+        }
+
+        try {
+          const response = await fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ cnic, password }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            window.location.href = "/vote";
+          } else {
+            showMessage("loginMessage", data.message, true);
+          }
+        } catch (error) {
+          showMessage(
+            "loginMessage",
+            "Connection error. Please try again.",
+            true
+          );
+        }
+      }
+
+      async function signup() {
+        const firstName = document.getElementById("firstName").value;
+        const lastName = document.getElementById("lastName").value;
+        const cnic = document.getElementById("cnic").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        const address = document.getElementById("address").value;
+        const password = document.getElementById("password").value;
+
+        if (
+          !firstName ||
+          !lastName ||
+          !cnic ||
+          !email ||
+          !phone ||
+          !address ||
+          !password
+        ) {
+          showMessage("signupMessage", "Please fill in all fields", true);
+          return;
+        }
+
+        try {
+          const response = await fetch("/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              first_name: firstName,
+              last_name: lastName,
+              cnic,
+              email,
+              phone,
+              address,
+              password,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showMessage("signupMessage", data.message, false);
+            setTimeout(() => {
+              goBackFromSignup();
+            }, 2000);
+          } else {
+            showMessage("signupMessage", data.message, true);
+          }
+        } catch (error) {
+          showMessage(
+            "signupMessage",
+            "Connection error. Please try again.",
+            true
+          );
+        }
+      }
+
+      function showSignup() {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("signupForm").style.display = "flex";
+      }
+
+      function goBackFromSignup() {
+        document.getElementById("signupForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "flex";
+        document.getElementById("signupMessage").innerHTML = "";
+      }
+
+      // Handle Enter key press
+      document.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          if (document.getElementById("loginForm").style.display !== "none") {
+            login();
+          } else if (
+            document.getElementById("signupForm").style.display !== "none"
+          ) {
+            signup();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

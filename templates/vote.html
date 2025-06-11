@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PMS Voting Portal - Vote</title>
+    <style>      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        background-attachment: fixed;
+        background-size: 100% 100%;
+        color: #e4e4e7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+          radial-gradient(circle at 20% 20%, rgba(185, 147, 214, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 80%, rgba(140, 166, 219, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 40% 70%, rgba(185, 147, 214, 0.05) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+      }h1 {
+        font-size: 2.7rem;
+        color: #f8fafc;
+        letter-spacing: 2px;
+        text-shadow: 0 0 20px rgba(185, 147, 214, 0.5), 0 0 40px rgba(185, 147, 214, 0.3);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: 1.3rem;
+        color: #b993d6;
+        margin-bottom: 24px;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }      .vote-container,
+      .confirmation {
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+        padding: 36px 38px 32px 38px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(185, 147, 214, 0.1) inset,
+                    0 0 20px rgba(185, 147, 214, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 340px;
+        margin: 20px;
+      }
+
+      .user-info {
+        background: rgba(185, 147, 214, 0.1);
+        padding: 15px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(185, 147, 214, 0.3);
+        text-align: center;
+      }
+
+      .user-info h3 {
+        color: #b993d6;
+        margin: 0 0 5px 0;
+        font-size: 1.1rem;
+      }
+
+      .user-info p {
+        color: #8ca6db;
+        margin: 0;
+        font-size: 0.95rem;
+      }
+
+      .vote-options {
+        display: flex;
+        gap: 36px;
+        margin-top: 22px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }      .party {
+        text-align: center;
+        cursor: pointer;
+        padding: 28px 24px 20px 24px;
+        border-radius: 16px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: rgba(15, 15, 35, 0.8);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+        min-width: 120px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .party::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(185, 147, 214, 0.1), transparent);
+        transition: left 0.5s;
+      }
+
+      .party:hover::before {
+        left: 100%;
+      }
+
+      .party:hover:not(.disabled) {
+        transform: scale(1.08) translateY(-6px);
+        box-shadow: 0 12px 40px rgba(185, 147, 214, 0.3);
+        border: 1px solid rgba(185, 147, 214, 0.6);
+        background: rgba(15, 15, 35, 0.95);
+      }
+
+      .party.disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .symbol {
+        font-size: 2.7rem;
+        margin-bottom: 8px;
+        display: block;
+        filter: drop-shadow(0 0 6px #b993d688);
+        text-shadow: 0 2px 8px #e3e6f3;
+      }
+
+      .party strong {
+        font-size: 1.15rem;
+        letter-spacing: 1px;
+        color: #b993d6;
+        font-weight: 700;
+        text-shadow: 0 1px 0 #b993d644;
+      }
+
+      .party[data-party="PMLN"] strong {
+        color: #b993d6;
+      }
+      .party[data-party="PTI"] strong {
+        color: #8ca6db;
+      }
+      .party[data-party="ARMY"] strong {
+        color: #b71c1c;
+      }
+
+      .confirmation {
+        font-size: 1.45rem;
+        color: #8ca6db;
+        text-shadow: 0 0 10px #b993d644;
+        display: none;
+        font-weight: 600;
+        background: linear-gradient(90deg, #181818 0%, #222 100%);
+        border: 1.5px solid #b993d6;
+        box-shadow: 0 2px 16px #b993d622;
+        text-align: center;
+      }
+
+      .already-voted {
+        background: rgba(183, 28, 28, 0.1);
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(183, 28, 28, 0.3);
+        color: #b71c1c;
+        text-align: center;
+        margin: 20px 0;
+        font-size: 1.1rem;
+      }      button {
+        padding: 14px 32px;
+        margin-top: 16px;
+        background: linear-gradient(135deg, #b993d6 0%, #8ca6db 100%);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1.08rem;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 20px rgba(185, 147, 214, 0.4);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+      button:hover {
+        background: linear-gradient(135deg, #8ca6db 0%, #b993d6 100%);
+        box-shadow: 0 6px 25px rgba(185, 147, 214, 0.6);
+        transform: translateY(-2px);
+      }
+      button:active {
+        transform: translateY(0px);
+        box-shadow: 0 2px 15px rgba(185, 147, 214, 0.4);
+      }
+
+      .secondary-btn {
+        background: rgba(15, 15, 35, 0.8) !important;
+        color: #b993d6 !important;
+        border: 1px solid rgba(185, 147, 214, 0.5) !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        box-shadow: none !important;
+        backdrop-filter: blur(5px) !important;
+      }
+      .secondary-btn:hover {
+        background: rgba(185, 147, 214, 0.1) !important;
+        border: 1px solid #b993d6 !important;
+        transform: translateY(-1px) !important;
+      }
+
+      .error-message {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        font-size: 0.95rem;
+      }
+
+      .success-message {
+        color: #51cf66;
+        background: rgba(81, 207, 102, 0.1);
+        padding: 10px 16px;
+        border-radius: 8px;
+        margin: 10px 0;
+        border: 1px solid rgba(81, 207, 102, 0.3);
+        font-size: 0.95rem;
+      }      .navigation-links {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .navigation-links a {
+        color: #b993d6;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        padding: 8px 16px;
+        border-radius: 8px;
+        background: rgba(185, 147, 214, 0.05);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+      }
+
+      .navigation-links a:hover {
+        color: #8ca6db;
+        background: rgba(185, 147, 214, 0.15);
+        border-color: rgba(185, 147, 214, 0.4);
+        transform: translateY(-1px);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .vote-options {
+          gap: 20px;
+        }
+        .party {
+          min-width: 90px;
+          padding: 20px 16px 14px 16px;
+        }
+        .symbol {
+          font-size: 2.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PMS Voting Portal</h1>
+    <h2>🗳️ Cast Your Vote</h2>
+
+    <div class="vote-container" id="voteSection">
+      <div class="user-info">
+        <h3>Welcome, {{ user_name }}!</h3>
+        <p>Exercise your democratic right</p>
+      </div>
+
+      <div id="voteMessage"></div>
+
+      {% if has_voted %}
+      <div class="already-voted">
+        <strong>✅ You have already voted!</strong><br />
+        Thank you for participating in the democratic process.
+      </div>
+      {% else %}
+      <h2 style="color: #b993d6; font-weight: 600; margin-bottom: 10px">
+        Choose Your Party
+      </h2>
+      <div class="vote-options">
+        <div class="party" data-party="PMLN" onclick="vote('PMLN')">
+          <span class="symbol">🐯</span>
+          <strong>PMLN</strong>
+        </div>
+        <div class="party" data-party="PTI" onclick="vote('PTI')">
+          <span class="symbol">🏏</span>
+          <strong>PTI</strong>
+        </div>
+        <div class="party" data-party="ARMY" onclick="vote('ARMY')">
+          <span class="symbol">⭐️⭐️⭐️⭐️⭐️</span>
+          <strong>ARMY</strong>
+        </div>
+      </div>
+      {% endif %}
+
+      <button
+        class="secondary-btn"
+        style="margin-top: 24px"
+        onclick="window.location.href='/'"
+      >
+        Back to Login
+      </button>
+      <button class="secondary-btn" style="margin-top: 8px" onclick="logout()">
+        Logout
+      </button>
+    </div>
+
+    <div class="confirmation" id="confirmation">
+      <div id="confirmationText"></div>
+      <button
+        class="secondary-btn"
+        style="margin-top: 18px"
+        onclick="window.location.href='/'"
+      >
+        Back to Login
+      </button>
+      <button
+        class="secondary-btn"
+        style="margin-top: 8px"
+        onclick="window.location.href='/results'"
+      >
+        View Results
+      </button>
+    </div>
+
+    <div class="navigation-links">
+      <a href="/results">View Results</a>
+      <a href="/admin">Admin Panel</a>
+    </div>
+
+    <script>
+      function showMessage(message, isError = false) {
+        const messageDiv = document.getElementById("voteMessage");
+        messageDiv.innerHTML = `<div class="${
+          isError ? "error-message" : "success-message"
+        }">${message}</div>`;
+        setTimeout(() => {
+          messageDiv.innerHTML = "";
+        }, 5000);
+      }
+
+      async function vote(party) {
+        // Disable all party options
+        const parties = document.querySelectorAll(".party");
+        parties.forEach((p) => {
+          p.classList.add("disabled");
+          p.onclick = null;
+        });
+
+        try {
+          const response = await fetch("/cast_vote", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ party }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("voteSection").style.display = "none";
+            const conf = document.getElementById("confirmation");
+            document.getElementById(
+              "confirmationText"
+            ).innerHTML = `✅ ${data.message}`;
+            conf.style.display = "block";
+          } else {
+            showMessage(data.message, true);
+            // Re-enable party options if vote failed
+            parties.forEach((p) => {
+              p.classList.remove("disabled");
+            });
+            // Re-add click handlers
+            document.querySelector('[data-party="PMLN"]').onclick = () =>
+              vote("PMLN");
+            document.querySelector('[data-party="PTI"]').onclick = () =>
+              vote("PTI");
+            document.querySelector('[data-party="ARMY"]').onclick = () =>
+              vote("ARMY");
+          }
+        } catch (error) {
+          showMessage("Connection error. Please try again.", true);
+          // Re-enable party options if there was an error
+          parties.forEach((p) => {
+            p.classList.remove("disabled");
+          });
+          // Re-add click handlers
+          document.querySelector('[data-party="PMLN"]').onclick = () =>
+            vote("PMLN");
+          document.querySelector('[data-party="PTI"]').onclick = () =>
+            vote("PTI");
+          document.querySelector('[data-party="ARMY"]').onclick = () =>
+            vote("ARMY");
+        }
+      }
+
+      async function logout() {
+        try {
+          const response = await fetch("/logout");
+          if (response.ok) {
+            window.location.href = "/";
+          }
+        } catch (error) {
+          window.location.href = "/";
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PMS Voting Portal - Results</title>
+    <style>      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+        color: #e4e4e7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        flex-direction: column;
+        overflow-x: hidden;
+      }      h1 {
+        font-size: 2.7rem;
+        color: #f8fafc;
+        letter-spacing: 2px;
+        text-shadow: 0 0 20px rgba(185, 147, 214, 0.5), 0 0 40px rgba(185, 147, 214, 0.3);
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: 1.3rem;
+        color: #b993d6;
+        margin-bottom: 24px;
+        font-weight: 500;
+        letter-spacing: 1px;
+      }      .results-container {
+        background: rgba(15, 15, 35, 0.95);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(185, 147, 214, 0.2);
+        padding: 36px 38px 32px 38px;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(185, 147, 214, 0.1) inset,
+                    0 0 20px rgba(185, 147, 214, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        min-width: 400px;
+        max-width: 600px;
+        margin: 20px;
+      }
+
+      .stats-overview {
+        display: flex;
+        gap: 30px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .stat-card {
+        background: linear-gradient(135deg, #222 70%, #181818 100%);
+        padding: 20px;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid #b993d6;
+        min-width: 120px;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #b993d6;
+        margin-bottom: 5px;
+      }
+
+      .stat-label {
+        font-size: 0.9rem;
+        color: #8ca6db;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .party-results {
+        width: 100%;
+        margin-bottom: 20px;
+      }
+
+      .party-result {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+        margin: 15px 0;
+        background: linear-gradient(135deg, #222 70%, #181818 100%);
+        border-radius: 12px;
+        border: 1px solid #444;
+        transition: transform 0.2s, border-color 0.2s;
+      }
+
+      .party-result:hover {
+        transform: translateY(-2px);
+        border-color: #b993d6;
+      }
+
+      .party-result.winner {
+        border: 2px solid #51cf66;
+        box-shadow: 0 0 20px rgba(81, 207, 102, 0.3);
+      }
+
+      .party-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .party-symbol {
+        font-size: 2rem;
+        filter: drop-shadow(0 0 6px #b993d688);
+      }
+
+      .party-name {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #b993d6;
+      }
+
+      .party-votes {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+      }
+
+      .vote-count {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #8ca6db;
+      }
+
+      .vote-percentage {
+        font-size: 0.9rem;
+        color: #b993d6;
+        background: rgba(185, 147, 214, 0.1);
+        padding: 4px 8px;
+        border-radius: 6px;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #333;
+        border-radius: 4px;
+        margin-top: 10px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #b993d6, #8ca6db);
+        border-radius: 4px;
+        transition: width 1s ease-in-out;
+      }
+
+      .winner-badge {
+        background: #51cf66;
+        color: #fff;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      button {
+        padding: 12px 32px;
+        margin: 10px;
+        background: linear-gradient(90deg, #b993d6 60%, #8ca6db 100%);
+        border: none;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1.08rem;
+        letter-spacing: 1px;
+        box-shadow: 0 2px 12px #b993d644;
+        transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+      }
+      button:hover {
+        background: linear-gradient(90deg, #8ca6db 0%, #b993d6 100%);
+        color: #fff;
+        box-shadow: 0 4px 24px #b993d666;
+      }
+
+      .secondary-btn {
+        background: #181818 !important;
+        color: #b993d6 !important;
+        border: 1.5px solid #b993d6 !important;
+        font-weight: 600 !important;
+        font-size: 1rem !important;
+        box-shadow: none !important;
+      }
+
+      .navigation-links {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .navigation-links a {
+        color: #b993d6;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 0.95rem;
+        transition: color 0.3s;
+      }
+
+      .navigation-links a:hover {
+        color: #8ca6db;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .results-container {
+          min-width: 300px;
+          padding: 24px 20px;
+        }
+        .stats-overview {
+          gap: 15px;
+        }
+        .stat-card {
+          min-width: 100px;
+          padding: 15px;
+        }
+        .party-result {
+          flex-direction: column;
+          text-align: center;
+          gap: 15px;
+        }
+        .party-votes {
+          align-items: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>PMS Voting Portal</h1>
+    <h2>📊 Election Results</h2>
+
+    <div class="results-container">
+      <div class="stats-overview">
+        <div class="stat-card">
+          <div class="stat-number">{{ total_votes }}</div>
+          <div class="stat-label">Total Votes</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{{ total_users }}</div>
+          <div class="stat-label">Registered Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">
+            {{ "%.1f"|format((total_votes / total_users * 100) if total_users >
+            0 else 0) }}%
+          </div>
+          <div class="stat-label">Turnout</div>
+        </div>
+      </div>
+
+      <div class="party-results">
+        {% for party, votes in results %} {% set percentage = (votes /
+        total_votes * 100) if total_votes > 0 else 0 %} {% set is_winner =
+        loop.first and votes > 0 %}
+
+        <div class="party-result {% if is_winner %}winner{% endif %}">
+          <div class="party-info">
+            <div class="party-symbol">
+              {% if party == 'PMLN' %}🐯 {% elif party == 'PTI' %}🏏 {% elif
+              party == 'ARMY' %}⭐️⭐️⭐️⭐️⭐️ {% endif %}
+            </div>
+            <div>
+              <div class="party-name">{{ party }}</div>
+              {% if is_winner and votes > 0 %}
+              <div class="winner-badge">Winner</div>
+              {% endif %}
+            </div>
+          </div>
+          <div class="party-votes">
+            <div class="vote-count">{{ votes }}</div>
+            <div class="vote-percentage">{{ "%.1f"|format(percentage) }}%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ percentage }}%"></div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div
+        style="
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+          justify-content: center;
+        "
+      >
+        <button onclick="window.location.reload()">Refresh Results</button>
+        <button class="secondary-btn" onclick="window.location.href='/'">
+          Back to Login
+        </button>
+        <button class="secondary-btn" onclick="window.location.href='/vote'">
+          Vote Page
+        </button>
+      </div>
+    </div>
+
+    <div class="navigation-links">
+      <a href="/">Login</a>
+      <a href="/vote">Vote</a>
+      <a href="/admin">Admin Panel</a>
+    </div>
+
+    <script>
+      // Auto-refresh results every 30 seconds
+      setTimeout(() => {
+        window.location.reload();
+      }, 30000);
+
+      // Animate progress bars on load
+      window.addEventListener("load", () => {
+        const progressBars = document.querySelectorAll(".progress-fill");
+        progressBars.forEach((bar) => {
+          const width = bar.style.width;
+          bar.style.width = "0%";
+          setTimeout(() => {
+            bar.style.width = width;
+          }, 500);
+        });
+      });
+    </script>
+  </body>
+</html>

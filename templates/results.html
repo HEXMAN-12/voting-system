@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PMS Voting Portal - Results</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      color: #e4e4e7;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.7rem;
+      color: #f8fafc;
+      letter-spacing: 2px;
+      text-shadow: 0 0 20px rgba(185, 147, 214, 0.5), 0 0 40px rgba(185, 147, 214, 0.3);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: 1.3rem;
+      color: #b993d6;
+      margin-bottom: 24px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .results-container {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(185, 147, 214, 0.2);
+      padding: 36px 38px 32px 38px;
+      border-radius: 20px;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3), 
+                  0 0 0 1px rgba(185, 147, 214, 0.1) inset,
+                  0 0 20px rgba(185, 147, 214, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 400px;
+      max-width: 600px;
+      margin: 20px;
+    }
+
+    .stats-overview {
+      display: flex;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .stat-card {
+      background: rgba(15, 15, 35, 0.8);
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(185, 147, 214, 0.3);
+      padding: 25px;
+      border-radius: 16px;
+      text-align: center;
+      min-width: 120px;
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(185, 147, 214, 0.6);
+      box-shadow: 0 8px 25px rgba(185, 147, 214, 0.2);
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #b993d6;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #8ca6db;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .party-results {
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .party-result {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 25px;
+      margin: 20px 0;
+      background: rgba(15, 15, 35, 0.8);
+      backdrop-filter: blur(5px);
+      border-radius: 16px;
+      border: 1px solid rgba(185, 147, 214, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .party-result::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(185, 147, 214, 0.05), transparent);
+      transition: left 0.6s;
+    }
+
+    .party-result:hover::before {
+      left: 100%;
+    }
+
+    .party-result:hover {
+      transform: translateY(-3px);
+      border-color: rgba(185, 147, 214, 0.5);
+      box-shadow: 0 10px 30px rgba(185, 147, 214, 0.15);
+    }
+
+    .party-result.winner {
+      border: 1px solid rgba(34, 197, 94, 0.6);
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.2);
+      background: rgba(15, 15, 35, 0.9);
+    }
+
+    .party-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .party-symbol {
+      font-size: 2.2rem;
+      filter: drop-shadow(0 0 8px rgba(185, 147, 214, 0.3));
+    }
+
+    .party-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #b993d6;
+    }
+
+    .party-votes {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .vote-count {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #8ca6db;
+    }
+
+    .vote-percentage {
+      font-size: 0.95rem;
+      color: #b993d6;
+      background: rgba(185, 147, 214, 0.15);
+      padding: 6px 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(5px);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      margin-top: 15px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #b993d6, #8ca6db);
+      border-radius: 3px;
+      transition: width 1.2s ease-in-out;
+      box-shadow: 0 0 10px rgba(185, 147, 214, 0.5);
+    }
+
+    .winner-badge {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 10px rgba(34, 197, 94, 0.3);
+    }
+
+    button {
+      padding: 14px 32px;
+      margin: 10px;
+      background: linear-gradient(135deg, #b993d6 0%, #8ca6db 100%);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.08rem;
+      letter-spacing: 1px;
+      box-shadow: 0 4px 20px rgba(185, 147, 214, 0.4);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    button:hover {
+      background: linear-gradient(135deg, #8ca6db 0%, #b993d6 100%);
+      box-shadow: 0 6px 25px rgba(185, 147, 214, 0.6);
+      transform: translateY(-2px);
+    }
+    button:active {
+      transform: translateY(0px);
+      box-shadow: 0 2px 15px rgba(185, 147, 214, 0.4);
+    }
+
+    .secondary-btn {
+      background: rgba(15, 15, 35, 0.8) !important;
+      color: #b993d6 !important;
+      border: 1px solid rgba(185, 147, 214, 0.5) !important;
+      font-weight: 600 !important;
+      font-size: 1rem !important;
+      box-shadow: none !important;
+      backdrop-filter: blur(5px) !important;
+    }
+    .secondary-btn:hover {
+      background: rgba(185, 147, 214, 0.1) !important;
+      border: 1px solid #b993d6 !important;
+      transform: translateY(-1px) !important;
+    }
+
+    .navigation-links {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .navigation-links a {
+      color: #b993d6;
+      text-decoration: none;
+      margin: 0 15px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      padding: 8px 16px;
+      border-radius: 8px;
+    }
+
+    .navigation-links a:hover {
+      color: #8ca6db;
+      background: rgba(185, 147, 214, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .results-container {
+        min-width: 300px;
+        padding: 24px 20px;
+      }
+      .stats-overview {
+        gap: 15px;
+      }
+      .stat-card {
+        min-width: 100px;
+        padding: 15px;
+      }
+      .party-result {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+        padding: 20px;
+      }
+      .party-votes {
+        align-items: center;
+      }
+      .party-info {
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PMS Voting Portal</h1>
+  <h2>📊 Election Results</h2>
+
+  <div class="results-container">
+    <div class="stats-overview">
+      <div class="stat-card">
+        <div class="stat-number">{{ total_votes }}</div>
+        <div class="stat-label">Total Votes</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ total_users }}</div>
+        <div class="stat-label">Registered Users</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ "%.1f"|format((total_votes / total_users * 100) if total_users > 0 else 0) }}%</div>
+        <div class="stat-label">Turnout</div>
+      </div>
+    </div>
+
+    <div class="party-results">
+      {% for party, votes in results %}
+      {% set percentage = (votes / total_votes * 100) if total_votes > 0 else 0 %}
+      {% set is_winner = loop.first and votes > 0 %}
+      
+      <div class="party-result {% if is_winner %}winner{% endif %}">
+        <div class="party-info">
+          <div class="party-symbol">
+            {% if party == 'PMLN' %}🐯
+            {% elif party == 'PTI' %}🏏
+            {% elif party == 'ARMY' %}⭐️⭐️⭐️⭐️⭐️
+            {% endif %}
+          </div>
+          <div>
+            <div class="party-name">{{ party }}</div>
+            {% if is_winner and votes > 0 %}
+            <div class="winner-badge">Winner</div>
+            {% endif %}
+          </div>
+        </div>
+        <div class="party-votes">
+          <div class="vote-count">{{ votes }}</div>
+          <div class="vote-percentage">{{ "%.1f"|format(percentage) }}%</div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: {{ percentage }}%"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+      <button onclick="window.location.reload()">🔄 Refresh Results</button>
+      <button class="secondary-btn" onclick="window.location.href='/'">🏠 Back to Login</button>
+      <button class="secondary-btn" onclick="window.location.href='/vote'">🗳️ Vote Page</button>
+    </div>
+  </div>
+
+  <div class="navigation-links">
+    <a href="/">Login</a>
+    <a href="/vote">Vote</a>
+    <a href="/admin">Admin Panel</a>
+  </div>
+
+  <script>
+    // Auto-refresh results every 30 seconds
+    setTimeout(() => {
+      window.location.reload();
+    }, 30000);
+
+    // Animate progress bars on load
+    window.addEventListener('load', () => {
+      const progressBars = document.querySelectorAll('.progress-fill');
+      progressBars.forEach((bar, index) => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 500 + (index * 200));
+      });
+    });
+  </script>
+</body>
+</html>

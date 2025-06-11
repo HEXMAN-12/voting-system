@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PMS Voting Portal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background: #fff;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.7rem;
+      color: #111;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 24px #e0e0e0, 0 0 0 #fff;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    h2 {
+      font-size: 1.3rem;
+      color: #b993d6;
+      margin-bottom: 24px;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    .form-container, .vote-container, .confirmation {
+      background: rgba(30,30,30,0.98);
+      padding: 36px 38px 32px 38px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px 0 rgba(0,0,0,0.18), 0 1.5px 0 #b993d6 inset;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1.5s cubic-bezier(.4,0,.2,1);
+      min-width: 340px;
+    }
+
+    input {
+      margin: 12px 0;
+      padding: 12px 22px;
+      border-radius: 8px;
+      border: 1.5px solid #444;
+      font-size: 1.08rem;
+      width: 230px;
+      background: #222;
+      transition: border 0.2s;
+      color: #eee;
+    }
+    input:focus {
+      border: 1.5px solid #b993d6;
+      outline: none;
+      background: #181818;
+    }
+
+    button {
+      padding: 12px 32px;
+      margin-top: 14px;
+      background: linear-gradient(90deg, #b993d6 60%, #8ca6db 100%);
+      border: none;
+      color: #fff;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.08rem;
+      letter-spacing: 1px;
+      box-shadow: 0 2px 12px #b993d644;
+      transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #8ca6db 0%, #b993d6 100%);
+      color: #fff;
+      box-shadow: 0 4px 24px #b993d666;
+    }
+
+    .vote-options {
+      display: flex;
+      gap: 36px;
+      margin-top: 22px;
+    }
+
+    .party {
+      text-align: center;
+      cursor: pointer;
+      padding: 26px 22px 18px 22px;
+      border-radius: 14px;
+      transition: transform 0.25s cubic-bezier(.4,0,.2,1), box-shadow 0.25s;
+      box-shadow: 0 2px 16px #b993d622;
+      background: linear-gradient(135deg, #222 70%, #181818 100%);
+      border: 2px solid transparent;
+      min-width: 110px;
+      position: relative;
+    }
+    .party:hover {
+      transform: scale(1.07) translateY(-4px);
+      box-shadow: 0 8px 32px #b993d633;
+      border: 2px solid #b993d6;
+      z-index: 2;
+    }
+
+    .symbol {
+      font-size: 2.7rem;
+      margin-bottom: 8px;
+      display: block;
+      filter: drop-shadow(0 0 6px #b993d688);
+      text-shadow: 0 2px 8px #e3e6f3;
+    }
+
+    .party strong {
+      font-size: 1.15rem;
+      letter-spacing: 1px;
+      color: #b993d6;
+      font-weight: 700;
+      text-shadow: 0 1px 0 #b993d644;
+    }
+
+    .party[data-party="PMLN"] strong { color: #b993d6; }
+    .party[data-party="PTI"] strong { color: #8ca6db; }
+    .party[data-party="ARMY"] strong { color: #b71c1c; }
+
+    .confirmation {
+      font-size: 1.45rem;
+      color: #8ca6db;
+      text-shadow: 0 0 10px #b993d644;
+      display: none;
+      font-weight: 600;
+      background: linear-gradient(90deg, #181818 0%, #222 100%);
+      border: 1.5px solid #b993d6;
+      box-shadow: 0 2px 16px #b993d622;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>PMS Voting Portal</h1>
+  <h2>🗳️ Welcome to the official voting portal</h2>
+
+  <div class="form-container" id="loginForm">
+    <input type="text" placeholder="Username" required />
+    <input type="password" placeholder="Password" required />
+    <button onclick="login()">Login</button>
+    <div style="margin-top:18px; font-size:0.98rem; color:#b993d6b0;">
+      Don't have an account?<br>
+      <button style="margin-top:8px; background:#181818; color:#b993d6; border:1.5px solid #b993d6; font-weight:600; font-size:1rem; box-shadow:none;" onclick="showSignup()">Register yourself now</button>
+    </div>
+  </div>
+
+  <div class="form-container" id="signupForm" style="display:none;">
+    <input type="text" placeholder="First Name" required />
+    <input type="text" placeholder="Last Name" required />
+    <input type="text" placeholder="CNIC" required />
+    <input type="email" placeholder="Email" required />
+    <input type="text" placeholder="Phone" required />
+    <input type="text" placeholder="Address" required />
+    <button onclick="signup()">Register</button>
+    <button style="margin-top:8px; background:#181818; color:#b71c1c; border:1.5px solid #b71c1c; font-weight:600; font-size:1rem; box-shadow:none;" onclick="goBackFromSignup()">Back to Login</button>
+  </div>
+
+  <div class="vote-container" id="voteSection" style="display:none;">
+    <h2 style="color:#b993d6; font-weight:600; margin-bottom:10px;">Choose Your Party</h2>
+    <div class="vote-options">
+      <div class="party" data-party="PMLN" onclick="vote('PMLN')">
+        <span class="symbol">🐯</span>
+        <strong>PMLN</strong>
+      </div>
+      <div class="party" data-party="PTI" onclick="vote('PTI')">
+        <span class="symbol">🏏</span>
+        <strong>PTI</strong>
+      </div>
+      <div class="party" data-party="ARMY" onclick="vote('ARMY')">
+        <span class="symbol">⭐️⭐️⭐️⭐️⭐️</span>
+        <strong>ARMY</strong>
+      </div>
+    </div>
+    <button style="margin-top:24px; background:#181818; color:#b993d6; border:1.5px solid #b993d6; font-weight:600; font-size:1rem; box-shadow:none;" onclick="goBackFromVote()">Back</button>
+  </div>
+
+  <div class="confirmation" id="confirmation">
+    ✅ Your vote has been registered!
+    <br>
+    <button style="margin-top:18px; background:#181818; color:#b993d6; border:1.5px solid #b993d6; font-weight:600; font-size:1rem; box-shadow:none;" onclick="goBackFromConfirmation()">Back to Login</button>
+  </div>
+
+  <script>
+    function login() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('voteSection').style.display = 'flex';
+    }
+
+    function showSignup() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'flex';
+    }
+
+    function showLogin() {
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'flex';
+    }
+
+    function signup() {
+      // You can add signup logic here
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'flex';
+      alert('Registration successful! Please login.');
+    }
+
+    function vote(party) {
+      document.getElementById('voteSection').style.display = 'none';
+      const conf = document.getElementById('confirmation');
+      conf.style.display = 'block';
+      conf.innerText = `✅ Your vote for ${party} has been registered!`;
+      // Add back button after vote
+      conf.innerHTML += '<br><button style="margin-top:18px; background:#181818; color:#b993d6; border:1.5px solid #b993d6; font-weight:600; font-size:1rem; box-shadow:none;" onclick="goBackFromConfirmation()">Back to Login</button>';
+    }
+
+    // Move to previous screen logic
+    function goBackFromSignup() {
+      showLogin();
+    }
+
+    function goBackFromVote() {
+      document.getElementById('voteSection').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'flex';
+    }
+
+    function goBackFromConfirmation() {
+      document.getElementById('confirmation').style.display = 'none';
+      document.getElementById('loginForm').style.display = 'flex';
+    }
+  </script>
+</body>
+</html> 
