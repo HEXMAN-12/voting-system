@@ -19,23 +19,39 @@ A complete web-based voting system built with Flask and SQLite, featuring a mode
 
 ## 🔧 Installation & Setup
 
-### Option 1: Quick Start (Recommended - Double Click)
+### Option 1: One-Click Setup (Recommended)
 
-**For immediate setup and launch:**
+**🚀 For immediate setup and launch:**
 1. **Double-click `quick-start.bat`**
-   - Automatically sets up everything
-   - Opens your web browser
-   - Takes you directly to the application
+   - Automatically creates virtual environment
+   - Installs all dependencies
+   - Starts the server in background
+   - Opens your web browser automatically
+   - Perfect for end users
 
-**For manual control:**
+**🔧 For development and monitoring:**
 1. **Double-click `run.bat`**
-   - Sets up the environment
-   - Starts the server
-   - Keeps the console window open for monitoring
+   - Complete setup with detailed console output
+   - Starts the server with visible logs
+   - Keeps console window open for debugging
+   - Better for development work
 
-**To stop the server:**
+**⚙️ For setup without running:**
+1. **Double-click `setup-only.bat`**
+   - Only sets up the environment and dependencies
+   - Doesn't start the server
+   - Good for initial setup or troubleshooting
+
+**📊 To check system status:**
+1. **Double-click `check-status.bat`**
+   - Shows environment status
+   - Checks if server is running
+   - Displays helpful information
+
+**🛑 To stop the server:**
 1. **Double-click `stop-server.bat`**
-   - Gracefully stops all related processes
+   - Safely stops all voting system processes
+   - Frees up port 5000
    - Cleans up the system
 
 ### Option 2: Manual Setup (Advanced Users)
@@ -60,20 +76,40 @@ A complete web-based voting system built with Flask and SQLite, featuring a mode
 
 ### `quick-start.bat` 🏃‍♂️
 - **One-click solution** for instant setup and launch
-- Automatically opens web browser to the application
-- Runs server in background (minimized window)
+- Creates virtual environment automatically
+- Installs all dependencies silently
+- Starts server in background (minimized window)
+- Opens web browser automatically to the application
 - Perfect for end users who just want to use the app
 
 ### `run.bat` 🔧
 - **Developer-friendly** setup and run script
 - Shows detailed console output for debugging
+- Creates virtual environment if needed
+- Installs dependencies with full output
 - Keeps console window open for monitoring
 - Better for development and troubleshooting
 
+### `setup-only.bat` ⚙️
+- **Environment setup** without running the application
+- Creates virtual environment
+- Installs all required dependencies
+- Perfect for initial setup or CI/CD environments
+- Doesn't start the server
+
+### `check-status.bat` 📊
+- **System diagnostics** and status checking
+- Shows virtual environment status
+- Checks if dependencies are installed
+- Displays server running status
+- Shows process information
+- Helpful for troubleshooting
+
 ### `stop-server.bat` 🛑
 - **Safe shutdown** of the voting system
-- Stops all Python processes related to the app
-- Cleans up port 5000
+- Stops all Python processes running app.py
+- Frees up port 5000 from any processes
+- Cleans up background processes
 - Use when you can't access the server window
 
 ## 🖥️ Usage
@@ -106,16 +142,20 @@ A complete web-based voting system built with Flask and SQLite, featuring a mode
 
 ```
 voting-system/
-├── app.py                 # Main Flask application
-├── requirements.txt       # Python dependencies
-├── run.bat               # Windows batch file for easy setup
-├── voting_system.db      # SQLite database (created automatically)
-├── voting-portal.html    # Original HTML file (reference)
-└── templates/            # Flask templates
-    ├── index.html        # Login/Registration page
-    ├── vote.html         # Voting page
-    ├── results.html      # Results page
-    └── admin.html        # Admin panel
+├── app.py                    # Main Flask application
+├── requirements.txt          # Python dependencies
+├── quick-start.bat          # One-click setup & launch
+├── run.bat                  # Developer setup & run
+├── setup-only.bat           # Environment setup only
+├── check-status.bat         # System status checker
+├── stop-server.bat          # Safe server shutdown
+├── voting_system.db         # SQLite database (created automatically)
+├── voting-portal.html       # Original HTML file (reference)
+└── templates/               # Flask templates
+    ├── index.html           # Login/Registration page
+    ├── vote.html            # Voting page
+    ├── results.html         # Results page
+    └── admin.html           # Admin panel
 ```
 
 ## 🔐 Security Features

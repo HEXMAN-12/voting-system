@@ -1,11 +1,10 @@
 @echo off
-setlocal enabledelayedexpansion
 
-:: PMS Voting System - Developer Run Script
-:: This script sets up and runs the application with console output visible
+:: PMS Voting System - Setup Only Script
+:: This script only sets up the environment without running the application
 
 echo ========================================
-echo    PMS Voting System - Developer Mode
+echo    PMS Voting System - Setup Only
 echo ========================================
 echo.
 
@@ -55,7 +54,7 @@ echo [4/5] Upgrading pip...
 python -m pip install --upgrade pip
 
 :: Install dependencies
-echo [5/5] Installing/checking dependencies...
+echo [5/5] Installing dependencies...
 pip install -r requirements.txt
 if %errorlevel% neq 0 (
     echo WARNING: Failed to install from requirements.txt
@@ -70,22 +69,19 @@ if %errorlevel% neq 0 (
 
 echo.
 echo ========================================
-echo      Setup Complete! Starting Server...
+echo        Setup Complete Successfully!
 echo ========================================
 echo.
-echo The application will be available at: http://localhost:5000
-echo Press Ctrl+C to stop the server
+echo Virtual environment: %cd%\venv
+echo Dependencies installed: Flask, Werkzeug
+echo.
+echo To start the application:
+echo - Double-click 'run.bat' for developer mode
+echo - Double-click 'quick-start.bat' for quick launch
+echo.
+echo To manually start (from command line):
+echo 1. call venv\Scripts\activate.bat
+echo 2. python app.py
 echo.
 
-:: Wait a moment
-timeout /t 2 /nobreak >nul
-
-:: Start the application
-python app.py
-
-echo.
-echo ========================================
-echo         Server has stopped
-echo ========================================
-echo.
 pause
