@@ -222,11 +222,144 @@
       padding: 40px;
       color: rgba(228, 228, 231, 0.6);
       font-size: 1.1rem;
-    }
-
-    @keyframes fadeIn {
+    }    @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Password Overlay Styles */
+    .password-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(20px);
+    }
+
+    .password-container {
+      background: rgba(15, 15, 35, 0.95);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(185, 147, 214, 0.3);
+      padding: 50px 60px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 
+                  0 0 0 1px rgba(185, 147, 214, 0.2) inset,
+                  0 0 50px rgba(185, 147, 214, 0.1);
+      text-align: center;
+      animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      max-width: 420px;
+      width: 90%;
+    }
+
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(-30px) scale(0.9); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    .password-container h2 {
+      color: #f8fafc;
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(185, 147, 214, 0.5);
+      border: none;
+      padding: 0;
+    }
+
+    .password-container p {
+      color: #b993d6;
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      opacity: 0.9;
+    }    .password-input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 1px solid rgba(185, 147, 214, 0.3);
+      border-radius: 12px;
+      background: rgba(15, 15, 35, 0.8);
+      backdrop-filter: blur(10px);
+      color: #e4e4e7;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+      text-align: center;
+      letter-spacing: 2px;
+      box-sizing: border-box;
+    }
+
+    .password-input:focus {
+      outline: none;
+      border-color: #b993d6;
+      box-shadow: 0 0 20px rgba(185, 147, 214, 0.3);
+      background: rgba(15, 15, 35, 0.9);
+    }
+
+    .password-submit {
+      width: 100%;
+      padding: 16px 24px;
+      background: linear-gradient(135deg, #b993d6 0%, #8ca6db 100%);
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 8px 25px rgba(185, 147, 214, 0.4);
+      box-sizing: border-box;
+    }
+
+    .password-submit:hover {
+      background: linear-gradient(135deg, #8ca6db 0%, #b993d6 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(185, 147, 214, 0.6);
+    }
+
+    .password-submit:active {
+      transform: translateY(0);
+    }
+
+    .password-error {
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      font-size: 0.95rem;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    .lock-icon {
+      font-size: 3rem;
+      color: #b993d6;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(185, 147, 214, 0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
     }
 
     @media (max-width: 768px) {
@@ -254,7 +387,32 @@
 </head>
 <body>
 
-  <div class="admin-container">
+  <!-- Password Overlay -->
+  {% if show_password_overlay %}
+  <div class="password-overlay" id="passwordOverlay">
+    <div class="password-container">
+      <div class="lock-icon">🔐</div>
+      <h2>Admin Access</h2>
+      <p>Enter password to access admin panel</p>
+      <form id="passwordForm" onsubmit="return false;">
+        <input 
+          type="password" 
+          id="passwordInput" 
+          class="password-input" 
+          placeholder="Enter Password" 
+          autocomplete="off"
+        />
+        <button type="submit" class="password-submit" onclick="submitPassword()">
+          Unlock Admin Panel
+        </button>
+        <div id="passwordError" class="password-error" style="display: none;"></div>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Admin Content -->
+  <div class="admin-container" {% if show_password_overlay %}style="filter: blur(5px); pointer-events: none;"{% endif %}>
     <h1>🔐 Admin Panel</h1>
     
     <div class="navigation-buttons">
@@ -262,53 +420,45 @@
       <button onclick="window.location.href='/vote'">🗳️ Vote Page</button>
       <button onclick="window.location.href='/results'">📊 View Results</button>
       <button class="secondary-btn" onclick="window.location.reload()">🔄 Refresh Data</button>
-    </div>    <h2>📊 Voting Statistics</h2>
+      {% if not show_password_overlay %}
+      <button class="secondary-btn" onclick="window.location.href='/admin_logout'">🔓 Logout Admin</button>
+      {% endif %}
+    </div>
+
+    <h2>📊 Voting Statistics</h2>
     <div class="stats-grid">
-      {% set pmln_votes = 0 %}
-      {% set pti_votes = 0 %}
-      {% set army_votes = 0 %}
-      
+      <!-- Display stats directly like in results page -->
       {% for party, votes in stats %}
-        {% if party == 'PMLN' %}
-          {% set pmln_votes = votes %}
-        {% elif party == 'PTI' %}
-          {% set pti_votes = votes %}
-        {% elif party == 'ARMY' %}
-          {% set army_votes = votes %}
-        {% endif %}
+        <div class="stat-card">
+          <div class="stat-number">
+            {% if party == 'PMLN' %}🐯{% elif party == 'PTI' %}🏏{% elif party == 'ARMY' %}⭐️{% endif %} 
+            {{ votes }}
+          </div>
+          <div class="stat-label">{{ party }} Votes</div>
+          <div class="stat-detail">
+            {% set total_votes = stats|sum(attribute=1) %}
+            {{ "%.1f"|format((votes / total_votes * 100) if total_votes > 0 else 0) }}% of total
+          </div>
+        </div>
       {% endfor %}
       
-      {% set total_votes = pmln_votes + pti_votes + army_votes %}
-      {% set voted_users = voted_users_count %}
-      {% set total_users = total_users_count %}
-      
+      <!-- Total votes card -->
       <div class="stat-card">
-        <div class="stat-number">🐯 {{ pmln_votes }}</div>
-        <div class="stat-label">PMLN Votes</div>
-        <div class="stat-detail">{{ "%.1f"|format((pmln_votes / total_votes * 100) if total_votes > 0 else 0) }}% of total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">🏏 {{ pti_votes }}</div>
-        <div class="stat-label">PTI Votes</div>
-        <div class="stat-detail">{{ "%.1f"|format((pti_votes / total_votes * 100) if total_votes > 0 else 0) }}% of total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">⭐️ {{ army_votes }}</div>
-        <div class="stat-label">ARMY Votes</div>
-        <div class="stat-detail">{{ "%.1f"|format((army_votes / total_votes * 100) if total_votes > 0 else 0) }}% of total</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number">{{ total_votes }}</div>
+        <div class="stat-number">{{ stats|sum(attribute=1) }}</div>
         <div class="stat-label">Total Votes Cast</div>
-        <div class="stat-detail">{{ voted_users }} users voted</div>
+        <div class="stat-detail">{{ voted_users_count }} users voted</div>
       </div>
+      
+      <!-- Total users card -->
       <div class="stat-card">
-        <div class="stat-number">{{ total_users }}</div>
+        <div class="stat-number">{{ total_users_count }}</div>
         <div class="stat-label">Registered Users</div>
-        <div class="stat-detail">{{ total_users - voted_users }} haven't voted</div>
+        <div class="stat-detail">{{ total_users_count - voted_users_count }} haven't voted</div>
       </div>
+      
+      <!-- Voter turnout card -->
       <div class="stat-card">
-        <div class="stat-number">{{ "%.1f"|format((voted_users / total_users * 100) if total_users > 0 else 0) }}%</div>
+        <div class="stat-number">{{ "%.1f"|format((voted_users_count / total_users_count * 100) if total_users_count > 0 else 0) }}%</div>
         <div class="stat-label">Voter Turnout</div>
         <div class="stat-detail">Participation rate</div>
       </div>
@@ -372,16 +522,95 @@
         Last updated: <span id="timestamp"></span>
       </p>
     </div>
-  </div>
+  </div>  <script>
+    // Initialize page
+    function initializePage() {
+      // Display current timestamp if element exists
+      const timestampEl = document.getElementById('timestamp');
+      if (timestampEl) {
+        timestampEl.textContent = new Date().toLocaleString();
+      }
 
-  <script>
-    // Display current timestamp
-    document.getElementById('timestamp').textContent = new Date().toLocaleString();
+      // Auto-refresh every 2 minutes if not showing password overlay
+      const passwordOverlay = document.getElementById('passwordOverlay');
+      if (!passwordOverlay) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 120000);
+      }
 
-    // Auto-refresh every 2 minutes
-    setTimeout(() => {
-      window.location.reload();
-    }, 120000);
+      // Focus on password input if overlay exists
+      const passwordInput = document.getElementById('passwordInput');
+      if (passwordInput) {
+        passwordInput.focus();
+        
+        // Handle Enter key press
+        passwordInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            submitPassword();
+          }
+        });
+      }
+    }
+
+    // Password submission function
+    async function submitPassword() {
+      const passwordInput = document.getElementById('passwordInput');
+      const errorDiv = document.getElementById('passwordError');
+      const password = passwordInput.value;
+      
+      if (!password) {
+        showPasswordError('Please enter a password');
+        return;
+      }
+
+      try {
+        const response = await fetch('/admin_login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ password: password })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Hide overlay with animation
+          const overlay = document.getElementById('passwordOverlay');
+          overlay.style.transition = 'all 0.5s ease-out';
+          overlay.style.opacity = '0';
+          overlay.style.transform = 'scale(0.9)';
+          
+          setTimeout(() => {
+            window.location.reload();
+          }, 300);
+        } else {
+          showPasswordError(data.message || 'Invalid password');
+          passwordInput.value = '';
+          passwordInput.focus();
+        }
+      } catch (error) {
+        showPasswordError('Connection error. Please try again.');
+        passwordInput.focus();
+      }
+    }
+
+    function showPasswordError(message) {
+      const errorDiv = document.getElementById('passwordError');
+      if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+        
+        // Auto-hide error after 3 seconds
+        setTimeout(() => {
+          errorDiv.style.display = 'none';
+        }, 3000);
+      }
+    }
+
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', initializePage);
   </script>
 </body>
 </html>

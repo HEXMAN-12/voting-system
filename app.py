@@ -230,6 +230,15 @@ def logout():
 
 @app.route('/admin')
 def admin():
+    # Check if admin is authenticated
+    if not session.get('admin_authenticated'):
+        return render_template('admin.html', 
+                             show_password_overlay=True,
+                             users=[],
+                             stats=[],
+                             voted_users_count=0,
+                             total_users_count=0)
+    
     # Simple admin page to view all data
     conn = sqlite3.connect('voting_system.db')
     cursor = conn.cursor()
@@ -261,7 +270,24 @@ def admin():
                          users=users, 
                          stats=stats,
                          voted_users_count=voted_users_count,
-                         total_users_count=total_users_count)
+                         total_users_count=total_users_count,
+                         show_password_overlay=False)
+
+@app.route('/admin_login', methods=['POST'])
+def admin_login():
+    data = request.get_json()
+    password = data.get('password', '')
+    
+    if password == 'sohaib':
+        session['admin_authenticated'] = True
+        return jsonify({'success': True, 'message': 'Access granted'})
+    else:
+        return jsonify({'success': False, 'message': 'Invalid password'})
+
+@app.route('/admin_logout')
+def admin_logout():
+    session.pop('admin_authenticated', None)
+    return redirect(url_for('admin'))
 
 if __name__ == '__main__':
     init_db()
